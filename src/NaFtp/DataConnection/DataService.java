@@ -15,17 +15,23 @@ import java.util.Date;
 import java.util.Objects;
 
 public class DataService extends Thread implements DataOperationCodes {
-    private String ftpDir;
+
+    private File ftpFile;
     private int dataOperation;
     private Socket dataServiceSocket;
     private DataOutputStream bufferOut;
     private DataInputStream bufferIn;
     private String fileToDownload;
 
-    public DataService(int dataOperation, Socket dataServiceSocket, String ftpDir) {
+//    public DataService(int dataOperation, Socket dataServiceSocket, String ftpDir) {
+//        this.dataOperation = dataOperation;
+//        this.dataServiceSocket = dataServiceSocket;
+//        this.ftpDir = ftpDir;
+//    }
+    public DataService(int dataOperation, Socket dataServiceSocket, File ftpDir) {
         this.dataOperation = dataOperation;
         this.dataServiceSocket = dataServiceSocket;
-        this.ftpDir = ftpDir;
+        this.ftpFile= ftpDir;
     }
 
     @Override
@@ -61,8 +67,7 @@ public class DataService extends Thread implements DataOperationCodes {
 
     private void listFilesAndRespond() throws IOException {
         try {
-            File file = new File(ftpDir);
-            File[] files = file.listFiles();
+            File[] files = ftpFile.listFiles();
             if (files != null) {
                 for (File value : files) {
                     FileOwnerAttributeView  attributes = Files.getFileAttributeView(value.toPath(), FileOwnerAttributeView.class);
@@ -86,12 +91,12 @@ public class DataService extends Thread implements DataOperationCodes {
     }
 
     private void convertTheFileToBytesAndSendToClient(String fileToDownload) {
-        File fileRequested = new File(ftpDir+fileToDownload);
-        System.out.println(fileRequested.getAbsolutePath());
+
+        System.out.println(ftpFile.getAbsolutePath());
         FileInputStream fileInputStream = null;
         try {
             byte[] dataBuffer = new byte[1024]; //byte array of data that will be sent (IN KB)
-            fileInputStream = new FileInputStream(fileRequested); //reading from the file
+            fileInputStream = new FileInputStream(ftpFile); //reading from the file
             //reading the bytes of the file
             while (fileInputStream.read(dataBuffer) != -1) {
                 bufferOut.write(dataBuffer);
@@ -112,15 +117,31 @@ public class DataService extends Thread implements DataOperationCodes {
     }
 
     private void receiveBytesFromClientAndStore(String fileToDownload) throws IOException {
-        File file = new File(ftpDir+fileToDownload);
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
+
+        FileOutputStream fileOutputStream = new FileOutputStream(ftpFile);
         byte[] data = new byte[1024];
-        int bytesRead;
-        do {
-             bytesRead = bufferIn.read(data);
-             fileOutputStream.write(data);
-        }while (bytesRead!=-1);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        int byteRead;
+
+        try{
+            while(true){
+                byteRead =bufferIn.readByte();
+//            bos.write(byteRead);
+                fileOutputStream.write(byteRead);
+            }
+        }catch (EOFException e){
+            System.out.println("Data Received");
+        }
+
+//        bos.flush();
         fileOutputStream.close();
+//        do {
+//
+//            bos.write(bufferIn.readByte());
+//             bytesRead = bufferIn.read(data);
+//            fileOutputStream.write(data);
+//        }while (bytesRead!=-1);
+//        fileOutputStream.close();
         System.out.println("file storage successful done");
     }
 

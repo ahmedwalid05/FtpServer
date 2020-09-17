@@ -1,25 +1,29 @@
 package NaFtp.Codes;
 
 public interface ClientCodes {
-    String AUTH = "auth";
-    String TLS = "tls";
-    String USER = "user";
+    String AUTH = "AUTH";
+    String TLS = "TLS";
+    String USER = "USER";
     String ANON = "anonymous";
-    String SYST = "syst";
-    String PWD = "pwd";
-    String XPWD = "xpwd";
+    String SYST = "SYST";
+    String PWD = "PWD";
+    String XPWD = "XPWD";
     String PASV = "PASV";
-    String PORT = "port";
-    String TYPE = "type";
-    String LIST = "list";
+    String PORT = "PORT";
+    String TYPE = "TYPE";
+    String LIST = "LIST";
+    String NLST = "NLST";
     String RETR = "RETR";
     String STOR = "STOR";
     String MKD = "MKD";
+    String XMKD = "XMKD";
     String DELE = "DELE";
     String RMD = "RMD";
-    String PASS = "pass";
+    String XRMD = "XRMD";
+    String PASS = "PASS";
     String CWD = "CWD";
     String CDUP = "CDUP";
     String SIZE = "SIZE";
+    String QUIT = "QUIT";
 
 }

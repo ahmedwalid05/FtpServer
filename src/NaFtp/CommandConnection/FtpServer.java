@@ -3,11 +3,13 @@ package NaFtp.CommandConnection;
 import Database.DatabaseHandler;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 
 public class FtpServer {
-    public static final String FILE_DIRECTORY = "D:\\NaFtpDir\\";
-    public static final String DRIVE_LABEL = "D:";
+    public static  String fileDirectory = "D:\\NaFtpDir\\";
+    public static  String driveLabel = "D:";
     public static final int PORT = 21;
     public static final DatabaseHandler DBH = new DatabaseHandler();
 
@@ -33,6 +35,20 @@ public class FtpServer {
 
 
     public static void main(String[] args) {
+        if(args.length>0) {
+            fileDirectory = args[0];
+            driveLabel = fileDirectory.substring(0, 2);
+        }
+        System.out.println("Starting Server From: "+fileDirectory);
         new FtpServer();
+    }
+    public static InetAddress getIpAddress(){
+        try {
+            InetAddress myIP=InetAddress.getLocalHost();
+            return myIP;
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -2,6 +2,7 @@ package models;
 
 public class FtpUser {
     private int userID;
+    private boolean isLoggedIn=false;
     private String username;
     private boolean canDownload;
     private boolean canUpload;
@@ -58,5 +59,13 @@ public class FtpUser {
 
     public void setCanDelete(boolean canDelete) {
         this.canDelete = canDelete;
+    }
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
     }
 }
